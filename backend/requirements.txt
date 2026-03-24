@@ -1,0 +1,17 @@
+django
+djangorestframework
+django-cors-headers
+django-environ
+psycopg2-binary
+djangorestframework-simplejwt
+django-filter
+django-channels
+channels-redis
+celery
+redis
+django-allauth
+dj-rest-auth
+python-magic
+pdfminer.six
+gunicorn
+whitenoise
