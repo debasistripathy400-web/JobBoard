@@ -27,7 +27,7 @@ export const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] md:w-3/4 max-w-7xl z-50">
+      <nav className={cn("fixed left-1/2 -translate-x-1/2 w-[90%] md:w-3/4 max-w-7xl z-50 transition-all duration-300", isScrolled ? "top-2 md:top-4" : "top-6")}>
         <div className="bg-slate-900/60 backdrop-blur-2xl border border-slate-800/50 rounded-3xl px-8 py-5 flex items-center justify-between shadow-2xl relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 via-transparent to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
           

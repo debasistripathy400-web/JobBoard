@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}Employer Dashboard - JobBoard{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Header Section -->
+    <div class="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div>
+            <h1 class="text-4xl font-extrabold text-white tracking-tight">Employer Dashboard</h1>
+            <p class="mt-2 text-sm text-gray-400">Welcome back, <span class="text-accent font-bold">{{ request.user.employer_profile.company_name }}</span></p>
+        </div>
+        <a href="{% url 'jobs:job_create' %}" class="inline-flex items-center px-6 py-4 border border-transparent text-base font-black rounded-xl shadow-[0_0_20px_rgba(100,255,218,0.2)] text-darkblue-900 bg-accent hover:bg-accent-hover transition-all hover:scale-105 uppercase tracking-tighter">
+            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            Post a New Job
+        </a>
+    </div>
+
+    <!-- Job Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+        <div class="glass p-6 rounded-2xl border border-white/5 shadow-xl">
+            <h3 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Total Listings</h3>
+            <p class="text-3xl font-extrabold text-white">{{ jobs.count }}</p>
+        </div>
+        <div class="glass p-6 rounded-2xl border border-white/5 shadow-xl text-accent border-accent/10">
+            <h3 class="text-accent/60 text-xs font-bold uppercase tracking-widest mb-2">Active Jobs</h3>
+            <p class="text-3xl font-extrabold">{{ jobs.filter.is_active.count|default:"0" }}</p>
+        </div>
+        <div class="glass p-6 rounded-2xl border border-white/5 shadow-xl">
+            <h3 class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">Total Applicants</h3>
+            <p class="text-3xl font-extrabold text-white">0</p> <!-- Simplified for now -->
+        </div>
+    </div>
+
+    <!-- Listed Jobs -->
+    <div class="bg-darkblue-800/40 border border-white/5 shadow-2xl rounded-3xl overflow-hidden relative">
+        <div class="px-8 py-6 border-b border-white/5 bg-white/5 flex justify-between items-center relative z-10">
+            <h2 class="text-xl font-bold text-white">Your Listed Jobs</h2>
+        </div>
+        
+        <ul class="divide-y divide-white/5 relative z-10">
+            {% for job in jobs %}
+            <li class="p-8 hover:bg-white/[0.02] transition-colors group">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+                    <div class="flex-grow">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 bg-darkblue-700/50 rounded-full text-[10px] font-black uppercase tracking-widest text-accent border border-accent/10">
+                                {{ job.job_type }}
+                            </span>
+                            <span class="text-xs text-gray-500 font-medium">Posted {{ job.created_at|date:"M d, Y" }}</span>
+                            
+                            <!-- Precise Status Badge -->
+                            {% if job.is_active %}
+                            <span class="flex items-center text-[10px] font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded-md border border-green-400/20">
+                                <span class="w-1.5 h-1.5 bg-green-400 rounded-full mr-1.5 animate-pulse"></span> ACTIVE
+                            </span>
+                            {% else %}
+                            <span class="flex items-center text-[10px] font-bold text-gray-500 bg-gray-500/10 px-2 py-0.5 rounded-md border border-white/5">
+                                <span class="w-1.5 h-1.5 bg-gray-500 rounded-full mr-1.5"></span> INACTIVE
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <h3 class="text-2xl font-bold text-white group-hover:text-accent transition-colors mb-2">
+                             <a href="{% url 'jobs:job_detail' job.pk %}">{{ job.title }}</a>
+                        </h3>
+                        
+                        <div class="flex flex-wrap items-center gap-6 text-sm text-gray-400">
+                            <p class="flex items-center">
+                                <svg class="mr-1.5 h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                {{ job.location }}
+                            </p>
+                            <p class="flex items-center bg-accent/5 px-3 py-1 rounded-lg text-accent font-bold text-xs ring-1 ring-accent/20">
+                                <svg class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                {{ job.applications.count }} Applicant{{ job.applications.count|pluralize }}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Grid -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <a href="{% url 'jobs:job_applicants' job.pk %}" class="px-5 py-2.5 bg-accent text-darkblue-900 text-xs font-black uppercase rounded-lg hover:bg-accent-hover transition-all transform hover:scale-[1.02] shadow-lg">
+                            Applicants
+                        </a>
+                        
+                        <a href="{% url 'jobs:job_edit' job.pk %}" class="px-5 py-2.5 bg-darkblue-700/50 text-white text-xs font-bold uppercase rounded-lg hover:bg-darkblue-600 transition-all border border-white/5">
+                            Edit
+                        </a>
+                        
+                        <form method="POST" action="{% url 'jobs:job_toggle' job.pk %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="px-5 py-2.5 {% if job.is_active %}bg-red-500/10 text-red-400 hover:bg-red-500/20 border-red-500/20{% else %}bg-green-500/10 text-green-400 hover:bg-green-500/20 border-green-500/20{% endif %} text-xs font-bold uppercase rounded-lg transition-all border">
+                                {% if job.is_active %}Deactivate{% else %}Activate{% endif %}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </li>
+            {% empty %}
+            <li class="px-8 py-24 text-center glass">
+                <div class="w-20 h-20 bg-darkblue-800 rounded-2xl flex items-center justify-center text-gray-600 mx-auto mb-6">
+                    <svg class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">No jobs listed yet</h3>
+                <p class="text-gray-400 mb-8">Start your recruitment by posting your first job opportunity.</p>
+                <a href="{% url 'jobs:job_create' %}" class="inline-block text-accent font-black tracking-widest uppercase text-xs border-b-2 border-accent/30 pb-0.5 hover:text-white transition-colors">Post your first job</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}My Applications - JobBoard{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-10 flex border-b border-white/10 pb-6 justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">My Applications</h1>
+            <p class="mt-2 text-sm text-gray-400">Track and manage your submitted job applications.</p>
+        </div>
+        <div>
+            <span class="inline-flex items-center px-4 py-2 border border-accent/30 rounded-full bg-darkblue-800 text-sm font-medium text-accent">
+                Total Applied: {{ applications|length }}
+            </span>
+        </div>
+    </div>
+
+    <div class="glass shadow-2xl rounded-xl border border-white/10 overflow-hidden">
+        <ul class="divide-y divide-white/5">
+            {% for app in applications %}
+            <li class="hover:bg-darkblue-800/30 transition-colors">
+                <a href="#" class="block px-6 py-5">
+                    <div class="flex items-center justify-between">
+                        <div class="flex flex-col">
+                            <p class="text-lg font-bold text-white mb-1">{{ app.job.title }}</p>
+                            <p class="text-sm font-medium text-accent">{{ app.job.employer.company_name }}</p>
+                        </div>
+                        <div class="ml-2 flex flex-col items-end">
+                            <p class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full border shadow-sm
+                                {% if app.status == 'Applied' %}bg-blue-500/20 text-blue-300 border-blue-500/30{% endif %}
+                                {% if app.status == 'Reviewed' %}bg-yellow-500/20 text-yellow-300 border-yellow-500/30{% endif %}
+                                {% if app.status == 'Accepted' %}bg-green-500/20 text-green-300 border-green-500/30{% endif %}
+                                {% if app.status == 'Rejected' %}bg-red-500/20 text-red-300 border-red-500/30{% endif %}
+                            ">
+                                {{ app.status }}
+                            </p>
+                            <p class="mt-2 text-xs text-gray-500">Applied {{ app.created_at|date:"M d, Y" }}</p>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {% empty %}
+            <li class="px-6 py-12 text-center">
+                <div class="mx-auto h-24 w-24 bg-darkblue-800 rounded-full flex items-center justify-center border border-white/5 text-gray-400 mb-4 shadow-inner">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-white">No applications yet</h3>
+                <p class="mt-2 text-sm text-gray-400 max-w-sm mx-auto">Get started by finding a job that matches your skills and start applying.</p>
+                <div class="mt-6">
+                    <a href="{% url 'jobs:list' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-bold rounded-md shadow-lg text-darkblue-900 bg-accent hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent transition-colors">
+                        Browse Jobs
+                    </a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

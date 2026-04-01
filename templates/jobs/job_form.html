@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - JobBoard{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">{{ title }}</h1>
+        <p class="mt-2 text-sm text-gray-400">Fill in the job details below to attract the best candidates.</p>
+    </div>
+
+    <div class="glass shadow-2xl rounded-xl border border-white/10 overflow-hidden">
+        <div class="p-8">
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-300">{{ field.label }}</label>
+                    <div class="mt-2">
+                        {% if field.field.widget.input_type == 'checkbox' %}
+                            <div class="flex items-center">
+                                <input type="checkbox" name="{{ field.html_name }}" id="{{ field.id_for_label }}" {% if field.value %}checked{% endif %} class="h-4 w-4 text-accent focus:ring-accent border-gray-300 rounded bg-darkblue-800">
+                                <span class="ml-2 text-sm text-gray-400">Mark as active listing</span>
+                            </div>
+                        {% elif field.name == 'category' or field.name == 'job_type' %}
+                            <select name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="block w-full px-3 py-2 border border-white/20 bg-darkblue-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
+                                {% for choice_val, choice_label in field.field.choices %}
+                                    <option value="{{ choice_val }}" {% if field.value == choice_val %}selected{% endif %}>{{ choice_label }}</option>
+                                {% endfor %}
+                            </select>
+                        {% elif field.field.widget.input_type == 'textarea' or field.name == 'description' %}
+                            <textarea name="{{ field.html_name }}" id="{{ field.id_for_label }}" rows="4" class="appearance-none block w-full px-3 py-2 border border-white/20 bg-darkblue-800 placeholder-gray-400 text-white rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">{{ field.value|default_if_none:"" }}</textarea>
+                        {% else %}
+                            <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.html_name }}" id="{{ field.id_for_label }}" value="{{ field.value|default_if_none:"" }}" class="appearance-none block w-full px-3 py-2 border border-white/20 bg-darkblue-800 placeholder-gray-400 text-white rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm" />
+                        {% endif %}
+                    </div>
+                    {% if field.help_text %}
+                        <p class="mt-2 text-sm text-gray-500">{{ field.help_text }}</p>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="mt-2 text-sm text-red-500 font-medium">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                <div class="pt-5 border-t border-white/10 flex justify-end">
+                    <a href="{% url 'jobs:employer_dashboard' %}" class="bg-transparent text-gray-300 hover:text-white font-medium py-2 px-6 rounded-md transition-colors mr-3">Cancel</a>
+                    <button type="submit" class="inline-flex justify-center py-2 px-6 border border-transparent shadow-lg text-sm font-bold rounded-md text-darkblue-900 bg-accent hover:bg-accent-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent focus:ring-offset-darkblue-900 transition-colors">
+                        Post Job
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

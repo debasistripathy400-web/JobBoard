@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block title %}Welcome to JobBoard - Your Career Starts Here{% endblock %}
+{% block content %}
+<!-- Hero Section -->
+<div class="relative pt-20 pb-32 overflow-hidden bg-darkblue-900">
+    <div class="absolute inset-0 z-0">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] animate-pulse" style="animation-delay: 2s;"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="text-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold text-white tracking-tight leading-tight">
+                Get Your <span class="text-accent underline decoration-accent/30">Dream Job</span><br>
+                Without Any Hassle
+            </h1>
+            <p class="mt-6 text-xl text-gray-400 max-w-3xl mx-auto">
+                Connecting top talent with the world's most innovative companies. Post your resume and get hired today by industry leaders.
+            </p>
+            
+            <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+                <a href="{% url 'jobs:list' %}" class="px-8 py-4 bg-accent text-darkblue-900 font-bold rounded-lg hover:bg-accent-hover transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(100,255,218,0.3)]">
+                    Explore Jobs
+                </a>
+                {% if not user.is_authenticated %}
+                <a href="{% url 'accounts:register' %}" class="px-8 py-4 bg-transparent border-2 border-white/20 text-white font-bold rounded-lg hover:border-accent hover:text-accent transition-all">
+                    Register Now
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="py-16 bg-darkblue-800/50 border-y border-white/5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-4xl font-bold text-white mb-2">10k+</div>
+                <div class="text-gray-400 font-medium">Active Jobs</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-white mb-2">5k+</div>
+                <div class="text-gray-400 font-medium">Companies</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-white mb-2">20k+</div>
+                <div class="text-gray-400 font-medium">Successful Hires</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-white mb-2">15+</div>
+                <div class="text-gray-400 font-medium">Job Categories</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Categories -->
+<div class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between mb-12">
+        <h2 class="text-3xl font-bold text-white">Popular Categories</h2>
+        <a href="{% url 'jobs:list' %}" class="text-accent hover:underline flex items-center">
+            All Categories <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {% for cat in categories|slice:":8" %}
+        <a href="{% url 'jobs:list' %}?category={{ cat.id }}" class="glass p-8 rounded-2xl hover:border-accent transition-all group">
+            <div class="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center text-accent mb-6 group-hover:scale-110 transition-transform">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-accent">{{ cat.name }}</h3>
+            <p class="mt-2 text-gray-400 text-sm">Explore active jobs in this field.</p>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Featured Jobs -->
+<div class="py-24 bg-darkblue-800/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-12">
+            <h2 class="text-3xl font-bold text-white">Featured Opportunities</h2>
+            <a href="{% url 'jobs:list' %}" class="text-accent hover:underline flex items-center">
+                Browse All Jobs <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for job in featured_jobs %}
+            <div class="glass p-6 rounded-2xl border border-white/5 hover:border-accent/30 transition-all">
+                <div class="flex items-center justify-between mb-6">
+                    <span class="px-3 py-1 bg-darkblue-700 rounded-full text-accent text-xs font-bold">{{ job.job_type }}</span>
+                    <span class="text-gray-500 text-xs">{{ job.created_at|timesince }} ago</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2 leading-tight">
+                    <a href="{% url 'jobs:job_detail' job.id %}" class="hover:underline">{{ job.title }}</a>
+                </h3>
+                <p class="text-accent font-medium mb-4 flex items-center text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    {{ job.employer.company_name }}
+                </p>
+                <div class="flex items-center text-gray-400 text-xs gap-4 mb-6">
+                    <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        {{ job.location }}
+                    </span>
+                </div>
+                <a href="{% url 'jobs:job_detail' job.id %}" class="block text-center py-2 bg-darkblue-700/50 hover:bg-accent hover:text-darkblue-900 text-white rounded-lg font-bold transition-all text-sm">
+                    View Details
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-span-full py-12 text-center text-gray-500">
+                New job opportunities arriving soon.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="py-24">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gradient-to-r from-accent/20 to-blue-500/20 rounded-[40px] p-12 md:p-20 text-center border border-white/10 relative overflow-hidden">
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+            <div class="relative z-10">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Take Your Team to the Next Level?</h2>
+                <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+                    Thousands of high-quality developers, designers, and marketers are looking for their next challenge. Post your opening now.
+                </p>
+                <a href="{% url 'jobs:job_create' %}" class="px-10 py-5 bg-accent text-darkblue-900 font-bold rounded-xl hover:bg-accent-hover transition-all inline-block text-lg shadow-xl ring-8 ring-accent/10 leading-none">
+                    Post a Job Today
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

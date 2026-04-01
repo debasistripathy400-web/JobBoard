@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { MapPin, Clock, DollarSign, Building2, Bookmark } from 'lucide-react';
+import { MapPin, Clock, DollarSign, Bookmark } from 'lucide-react';
 import { Button } from './ui/Button';
 import { cn } from '../lib/utils';
 
